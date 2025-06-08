@@ -89,17 +89,17 @@ export default function Carousel({
 
   const carouselContent = (
     <div 
-      className="relative w-full max-w-6xl mx-auto bg-white rounded-lg border border-gray-300 shadow p-10 flex flex-col items-center"
+      className="relative w-full max-w-6xl mx-auto bg-white rounded-lg border border-gray-300 shadow p-2 sm:p-4 md:p-6 lg:p-10 flex flex-col items-center"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <button
           onClick={onClose}
-          className="absolute -top-1 right-0 p-5 sm:p-4 md:p-2 text-gray-900 hover:text-blue-600 transition-colors"
+          className="absolute -top-1 right-0 p-2 sm:p-3 md:p-4 lg:p-5 text-gray-900 hover:text-blue-600 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-3 w-3 sm:h-5 sm:w-5 md:h-7 md:w-7 lg:h-9 lg:w-9"
+            className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-7 lg:w-7"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -113,9 +113,19 @@ export default function Carousel({
           </svg>
         </button>
       
-      {/* Main Slide Area */}
-      <div className="relative w-full max-w-[900px] flex justify-center items-center mb-0">
-        <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[9/5] lg:aspect-[16/9] rounded-lg border border-gray-300 bg-white overflow-hidden flex items-center justify-center">
+      {/* Main Content Area with Navigation */}
+      <div className="relative w-full max-w-[1200px] flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left Navigation Button */}
+        <button
+          onClick={prevSlide}
+          className="bg-white border border-gray-300 text-blue-600 p-1 sm:p-1.5 md:p-2 lg:p-3 rounded-full shadow-sm hover:bg-blue-50 transition-all z-10 flex-shrink-0"
+          aria-label="Previous slide"
+        >
+          <ChevronLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
+        </button>
+
+        {/* Main Slide Area */}
+        <div className="relative w-full aspect-[16/9] rounded-lg border border-gray-300 bg-white overflow-hidden flex items-center justify-center">
           <Image
             src={images[currentSlide]}
             alt={`Slide ${currentSlide + 1}`}
@@ -124,32 +134,23 @@ export default function Carousel({
             priority
           />
         </div>
-      </div>
 
-      {/* Navigation Buttons */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[calc(95%)] flex justify-between items-center pointer-events-none">
-        <button
-          onClick={prevSlide}
-          className="bg-white border border-gray-300 text-blue-600 p-1.5 sm:p-2 md:p-3 rounded-full shadow-sm hover:bg-blue-50 transition-all z-10 pointer-events-auto"
-          aria-label="Previous slide"
-        >
-          <ChevronLeftIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-        </button>
+        {/* Right Navigation Button */}
         <button
           onClick={nextSlide}
-          className="bg-white border border-gray-300 text-blue-600 p-1.5 sm:p-2 md:p-3 rounded-full shadow-sm hover:bg-blue-50 transition-all z-10 pointer-events-auto"
+          className="bg-white border border-gray-300 text-blue-600 p-1 sm:p-1.5 md:p-2 lg:p-3 rounded-full shadow-sm hover:bg-blue-50 transition-all z-10 flex-shrink-0"
           aria-label="Next slide"
         >
-          <ChevronRightIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+          <ChevronRightIcon className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
         </button>
       </div>
 
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
-        <div className="w-full max-w-[900px] mt-4 sm:mt-6 md:mt-8 mb-1 sm:mb-2">
+        <div className="w-full max-w-[1200px] mt-2 sm:mt-4 md:mt-6 mb-1">
           <div 
             ref={thumbnailContainerRef}
-            className="flex space-x-4 overflow-x-auto py-1 sm:py-2 px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+            className="flex space-x-2 sm:space-x-4 overflow-x-auto py-1 px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
           >
             {images.map((image, index) => (
               <button
@@ -158,7 +159,7 @@ export default function Carousel({
                   thumbnailRefs.current[index] = el;
                 }}
                 onClick={() => handleThumbnailClick(index)}
-                className={`relative flex-shrink-0 w-8 h-8 sm:h-10 sm:w-10 md:h-20 md:w-20 lg:h-20 lg:w-20 rounded-lg border border-gray-300 overflow-hidden transition-all bg-white shadow-sm ${
+                className={`relative flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg border border-gray-300 overflow-hidden transition-all bg-white shadow-sm ${
                   currentSlide === index ? 'ring-2 ring-blue-600 border-blue-600 scale-105 z-10' : 'opacity-70 hover:opacity-100'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
@@ -180,7 +181,7 @@ export default function Carousel({
   if (showModal) {
     return (
       <div 
-        className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
         onClick={handleModalClick}
       >
         <div className="relative w-full max-w-6xl mx-auto">
