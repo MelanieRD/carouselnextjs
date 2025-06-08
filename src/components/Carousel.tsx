@@ -89,17 +89,17 @@ export default function Carousel({
 
   const carouselContent = (
     <div 
-      className="relative w-full max-w-6xl mx-auto bg-white rounded-lg border border-gray-300 shadow p-10 flex flex-col items-center"
+      className="relative w-full max-w-6xl mx-auto bg-white rounded-lg border border-gray-300 shadow p-2 sm:p-4 md:p-6 lg:p-10 flex flex-col items-center"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <button
           onClick={onClose}
-          className="absolute -top-1 right-0 p-5 sm:p-4 md:p-2 text-gray-900 hover:text-blue-600 transition-colors"
+          className="absolute -top-1 right-0 p-2 sm:p-3 md:p-4 lg:p-5 text-gray-900 hover:text-blue-600 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-3 w-3 sm:h-5 sm:w-5 md:h-7 md:w-7 lg:h-9 lg:w-9"
+            className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-7 lg:w-7"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -181,7 +181,7 @@ export default function Carousel({
   if (showModal) {
     return (
       <div 
-        className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
         onClick={handleModalClick}
       >
         <div className="relative w-full max-w-6xl mx-auto">
