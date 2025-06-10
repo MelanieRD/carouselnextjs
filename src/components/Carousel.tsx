@@ -26,6 +26,16 @@ export default function Carousel({
   showModal = false,
   onClose
 }: CarouselProps) {
+  // Valida si una URL es realmente válida
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   // Agrupar por label y separar urls por coma
   const grouped = useMemo(() => {
     const map: Record<string, { label: string; url: string }[]> = {};
@@ -34,7 +44,8 @@ export default function Carousel({
       const urls = item.url
         .split(',')
         .map(u => u.trim())
-        .filter(u => u && (u.startsWith('http://') || u.startsWith('https://')));
+        .filter(u => u && (u.startsWith('http://') || u.startsWith('https://')))
+        .filter(isValidUrl);
       if (!map[item.label]) map[item.label] = [];
       for (const url of urls) {
         map[item.label].push({ label: item.label, url });
