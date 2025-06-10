@@ -35,6 +35,7 @@ export default function Carousel({
   const categories = Object.keys(media || {});
   const [selectedCategory, setSelectedCategory] = useState(categories[0] || '');
   const images = media[selectedCategory] || [];
+  const validImages = images.filter(img => img && img.url);
 
   const [currentSlide, setCurrentSlide] = useState(initialSlide);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
@@ -44,6 +45,12 @@ export default function Carousel({
   useEffect(() => {
     setCurrentSlide(initialSlide);
   }, [initialSlide, selectedCategory]);
+
+  useEffect(() => {
+    if (currentSlide >= validImages.length) {
+      setCurrentSlide(0);
+    }
+  }, [selectedCategory, validImages.length]);
 
   const scrollThumbnailIntoView = useCallback((index: number) => {
     const thumbnail = thumbnailRefs.current[index];
@@ -88,17 +95,22 @@ export default function Carousel({
     scrollThumbnailIntoView(index);
   };
 
-  // --- Botones de categoría ---
-  const categoryButtons = (
-    <div className="w-full flex justify-center mt-4 gap-2">
+  // --- Labels de categoría (clickeables) ---
+  const categoryLabels = (
+    <div className="w-full flex justify-center mt-4 gap-6">
       {categories.map((cat) => (
-        <button
+        <span
           key={cat}
           onClick={() => setSelectedCategory(cat)}
-          className={`px-4 py-2 rounded-full border ${selectedCategory === cat ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-600 border-blue-300'} transition-all`}
+          className={`cursor-pointer text-lg select-none transition-all px-2 pb-1 border-b-2 ${
+            selectedCategory === cat
+              ? 'text-blue-600 border-blue-600 font-bold'
+              : 'text-gray-500 border-transparent hover:text-blue-500 hover:border-blue-300'
+          }`}
+          style={{ userSelect: 'none' }}
         >
           {media[cat][0]?.label || cat}
-        </button>
+        </span>
       ))}
     </div>
   );
@@ -129,7 +141,7 @@ export default function Carousel({
         </svg>
       </button>
       {/* Main Content Area with Navigation */}
-      {images.length === 0 ? (
+      {validImages.length === 0 ? (
         <div className="text-gray-500 py-20">No hay imágenes en esta categoría.</div>
       ) : (
         <>
@@ -143,15 +155,17 @@ export default function Carousel({
               <ChevronLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
             </button>
             {/* Main Slide Area */}
-            <div className="relative w-full aspect-[16/9] rounded-lg border border-gray-300 bg-white overflow-hidden flex items-center justify-center">
-              <Image
-                src={images[currentSlide].url}
-                alt={images[currentSlide].label || `Slide ${currentSlide + 1}`}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
+            {currentSlide < validImages.length && (
+              <div className="relative w-full aspect-[16/9] rounded-lg border border-gray-300 bg-white overflow-hidden flex items-center justify-center">
+                <Image
+                  src={validImages[currentSlide].url}
+                  alt={validImages[currentSlide].label || `Slide ${currentSlide + 1}`}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
             {/* Right Navigation Button */}
             <button
               onClick={nextSlide}
@@ -162,13 +176,13 @@ export default function Carousel({
             </button>
           </div>
           {/* Thumbnail Navigation */}
-          {images.length > 1 && (
+          {validImages.length > 1 && (
             <div className="w-full max-w-[1200px] mt-2 sm:mt-4 md:mt-6 mb-1">
               <div 
                 ref={thumbnailContainerRef}
                 className="flex space-x-2 sm:space-x-4 overflow-x-auto py-1 px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
               >
-                {images.map((image, index) => (
+                {validImages.map((image, index) => (
                   <button
                     key={index}
                     ref={(el) => {
@@ -180,12 +194,14 @@ export default function Carousel({
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   >
-                    <Image
-                      src={image.url}
-                      alt={image.label || `Thumbnail ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
+                    {image && image.url && (
+                      <Image
+                        src={image.url}
+                        alt={image.label || `Thumbnail ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    )}
                   </button>
                 ))}
               </div>
@@ -193,8 +209,8 @@ export default function Carousel({
           )}
         </>
       )}
-      {/* Botones de categoría en la parte inferior */}
-      {categoryButtons}
+      {/* Labels de categoría en la parte inferior */}
+      {categoryLabels}
     </div>
   );
 
