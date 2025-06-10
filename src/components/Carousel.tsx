@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 interface MediaItem {
   label: string;
-  url: string; // puede ser varias urls separadas por coma
+  url: string;
 }
 
 interface CarouselProps {
@@ -26,7 +26,6 @@ export default function Carousel({
   showModal = false,
   onClose
 }: CarouselProps) {
-  // Valida si una URL es realmente válida
   const isValidUrl = (url: string) => {
     try {
       new URL(url);
@@ -36,7 +35,6 @@ export default function Carousel({
     }
   };
 
-  // Agrupar por label y separar urls por coma
   const grouped = useMemo(() => {
     const map: Record<string, { label: string; url: string }[]> = {};
     for (const item of media) {
@@ -53,6 +51,7 @@ export default function Carousel({
     }
     return map;
   }, [media]);
+
   const categories = Object.keys(grouped);
   const [selectedCategory, setSelectedCategory] = useState(categories[0] || '');
   const images = grouped[selectedCategory] || [];
@@ -85,16 +84,16 @@ export default function Carousel({
   }, []);
 
   const nextSlide = useCallback(() => {
-    const newIndex = (currentSlide + 1) % images.length;
+    const newIndex = (currentSlide + 1) % validImages.length;
     setCurrentSlide(newIndex);
     scrollThumbnailIntoView(newIndex);
-  }, [currentSlide, images.length, scrollThumbnailIntoView]);
+  }, [currentSlide, validImages.length, scrollThumbnailIntoView]);
 
   const prevSlide = useCallback(() => {
-    const newIndex = (currentSlide - 1 + images.length) % images.length;
+    const newIndex = (currentSlide - 1 + validImages.length) % validImages.length;
     setCurrentSlide(newIndex);
     scrollThumbnailIntoView(newIndex);
-  }, [currentSlide, images.length, scrollThumbnailIntoView]);
+  }, [currentSlide, validImages.length, scrollThumbnailIntoView]);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -116,7 +115,6 @@ export default function Carousel({
     scrollThumbnailIntoView(index);
   };
 
-  // --- Labels de categoría (clickeables) ---
   const categoryLabels = (
     <div className="w-full flex justify-center mt-4 gap-2 sm:gap-4 md:gap-6">
       {categories.map((cat) => {
@@ -131,7 +129,6 @@ export default function Carousel({
                 ? 'text-white border-blue-400 font-extrabold'
                 : 'text-blue-200 border-transparent hover:text-blue-300 hover:border-blue-300'}
             `}
-            style={{ userSelect: 'none' }}
           >
             {cat + ` (${count})`}
           </span>
@@ -165,13 +162,12 @@ export default function Carousel({
           />
         </svg>
       </button>
-      {/* Main Content Area with Navigation */}
+
       {validImages.length === 0 ? (
         <div className="text-gray-500 py-20">No hay imágenes en esta categoría.</div>
       ) : (
         <>
           <div className="relative w-full max-w-[1200px] flex items-center justify-between gap-2 sm:gap-4">
-            {/* Left Navigation Button */}
             <button
               onClick={prevSlide}
               className="bg-white border border-gray-300 text-blue-600 p-1 sm:p-1.5 md:p-2 lg:p-3 rounded-full shadow-sm hover:bg-blue-50 transition-all z-10 flex-shrink-0"
@@ -179,7 +175,7 @@ export default function Carousel({
             >
               <ChevronLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
             </button>
-            {/* Main Slide Area */}
+
             {currentSlide < validImages.length && (
               <div className="relative w-full aspect-[16/9] rounded-lg border border-gray-300 bg-white overflow-hidden flex items-center justify-center">
                 <Image
@@ -191,7 +187,7 @@ export default function Carousel({
                 />
               </div>
             )}
-            {/* Right Navigation Button */}
+
             <button
               onClick={nextSlide}
               className="bg-white border border-gray-300 text-blue-600 p-1 sm:p-1.5 md:p-2 lg:p-3 rounded-full shadow-sm hover:bg-blue-50 transition-all z-10 flex-shrink-0"
@@ -200,7 +196,7 @@ export default function Carousel({
               <ChevronRightIcon className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
             </button>
           </div>
-          {/* Thumbnail Navigation */}
+
           {validImages.length > 1 && (
             <div className="w-full max-w-[1200px] mt-2 sm:mt-4 md:mt-6 mb-1">
               <div 
@@ -219,14 +215,12 @@ export default function Carousel({
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   >
-                    {image && image.url && (image.url.startsWith('http://') || image.url.startsWith('https://')) && (
-                      <Image
-                        src={image.url}
-                        alt={image.label || `Thumbnail ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    )}
+                    <Image
+                      src={image.url}
+                      alt={image.label || `Thumbnail ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -234,7 +228,7 @@ export default function Carousel({
           )}
         </>
       )}
-      {/* Labels de categoría en la parte inferior */}
+      
       {categoryLabels}
     </div>
   );
