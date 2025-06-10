@@ -98,20 +98,23 @@ export default function Carousel({
   // --- Labels de categoría (clickeables) ---
   const categoryLabels = (
     <div className="w-full flex justify-center mt-4 gap-6">
-      {categories.map((cat) => (
-        <span
-          key={cat}
-          onClick={() => setSelectedCategory(cat)}
-          className={`cursor-pointer text-lg select-none transition-all px-2 pb-1 border-b-2 ${
-            selectedCategory === cat
-              ? 'text-blue-600 border-blue-600 font-bold'
-              : 'text-gray-500 border-transparent hover:text-blue-500 hover:border-blue-300'
-          }`}
-          style={{ userSelect: 'none' }}
-        >
-          {media[cat][0]?.label || cat}
-        </span>
-      ))}
+      {categories.map((cat) => {
+        const count = (media[cat] || []).filter(img => img && img.url).length;
+        return (
+          <span
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            className={`cursor-pointer text-lg select-none transition-all px-2 pb-1 border-b-2 ${
+              selectedCategory === cat
+                ? 'text-blue-600 border-blue-600 font-bold'
+                : 'text-gray-500 border-transparent hover:text-blue-500 hover:border-blue-300'
+            }`}
+            style={{ userSelect: 'none' }}
+          >
+            {(media[cat][0]?.label || cat) + ` (${count})`}
+          </span>
+        );
+      })}
     </div>
   );
 
