@@ -1,21 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
-// Cambia la interfaz para aceptar la nueva estructura
-interface MediaImage {
+interface MediaItem {
   label: string;
-  url: string;
-}
-
-interface Media {
-  [category: string]: MediaImage[];
+  url: string; // puede ser varias urls separadas por coma
 }
 
 interface CarouselProps {
-  media: Media; // Cambiado de images: string[]
+  media: MediaItem[];
   autoPlay?: boolean;
   interval?: number;
   initialSlide?: number;
@@ -31,10 +26,25 @@ export default function Carousel({
   showModal = false,
   onClose
 }: CarouselProps) {
-  // Obtén las categorías y la primera como default
-  const categories = Object.keys(media || {});
+  // Agrupar por label y separar urls por coma
+  const grouped = useMemo(() => {
+    const map: Record<string, { label: string; url: string }[]> = {};
+    for (const item of media) {
+      if (!item.label || !item.url) continue;
+      const urls = item.url
+        .split(',')
+        .map(u => u.trim())
+        .filter(u => u && (u.startsWith('http://') || u.startsWith('https://')));
+      if (!map[item.label]) map[item.label] = [];
+      for (const url of urls) {
+        map[item.label].push({ label: item.label, url });
+      }
+    }
+    return map;
+  }, [media]);
+  const categories = Object.keys(grouped);
   const [selectedCategory, setSelectedCategory] = useState(categories[0] || '');
-  const images = media[selectedCategory] || [];
+  const images = grouped[selectedCategory] || [];
   const validImages = images.filter(img => img && img.url);
 
   const [currentSlide, setCurrentSlide] = useState(initialSlide);
@@ -97,21 +107,22 @@ export default function Carousel({
 
   // --- Labels de categoría (clickeables) ---
   const categoryLabels = (
-    <div className="w-full flex justify-center mt-4 gap-6">
+    <div className="w-full flex justify-center mt-4 gap-2 sm:gap-4 md:gap-6">
       {categories.map((cat) => {
-        const count = (media[cat] || []).filter(img => img && img.url).length;
+        const count = (grouped[cat] || []).length;
+        if (count === 0) return null;
         return (
           <span
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`cursor-pointer text-lg select-none transition-all px-2 pb-1 border-b-2 ${
-              selectedCategory === cat
-                ? 'text-blue-600 border-blue-600 font-bold'
-                : 'text-gray-500 border-transparent hover:text-blue-500 hover:border-blue-300'
-            }`}
+            className={`cursor-pointer text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl select-none transition-all px-1 sm:px-2 pb-1 border-b-2 font-semibold tracking-wide drop-shadow-md
+              ${selectedCategory === cat
+                ? 'text-white border-blue-400 font-extrabold'
+                : 'text-blue-200 border-transparent hover:text-blue-300 hover:border-blue-300'}
+            `}
             style={{ userSelect: 'none' }}
           >
-            {(media[cat][0]?.label || cat) + ` (${count})`}
+            {cat + ` (${count})`}
           </span>
         );
       })}
@@ -120,17 +131,17 @@ export default function Carousel({
 
   const carouselContent = (
     <div 
-      className="relative w-full max-w-6xl mx-auto bg-white rounded-lg border border-gray-300 shadow p-2 sm:p-4 md:p-6 lg:p-10 flex flex-col items-center"
+      className="relative w-full max-w-6xl mx-auto bg-transparent rounded-lg p-2 sm:p-4 md:p-6 lg:p-10 flex flex-col items-center"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <button
         onClick={onClose}
-        className="absolute -top-1 right-0 p-2 sm:p-3 md:p-4 lg:p-5 text-gray-900 hover:text-blue-600 transition-colors"
+        className="absolute -top-1 right-0 p-2 sm:p-3 md:p-4 lg:p-5 text-white hover:text-blue-400 transition-colors drop-shadow-lg"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-7 lg:w-7"
+          className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-8 lg:w-8"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -197,7 +208,7 @@ export default function Carousel({
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   >
-                    {image && image.url && (
+                    {image && image.url && (image.url.startsWith('http://') || image.url.startsWith('https://')) && (
                       <Image
                         src={image.url}
                         alt={image.label || `Thumbnail ${index + 1}`}

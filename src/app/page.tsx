@@ -7,11 +7,7 @@ import Image from 'next/image';
 interface Product {
   id: number;
   name: string;
-  images: {
-    auction?: string[];
-    base?: string[];
-    port?: string[];
-  };
+  media: { label: string; url: string }[];
 }
 
 export default function Home() {
@@ -21,41 +17,26 @@ export default function Home() {
     {
       id: 1,
       name: "RAM 1500",
-      images: {
-        auction: [
-          "https://es.ramtrucks.com/mediaserver/iris?client=FCAUS&market=U&brand=R&vehicle=2025_DT&paint=PCG&fabric=&sa=DT6R98,2TV,22V,APA&pov=fronthero&width=770&height=400&bkgnd=white&resp=jpg&x=&y=&w=&h=&width=500&width=500",
-          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        ],
-        base: [
-          "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        ],
-        port: [
-          "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        ]
-      }
+      media: [
+        { label: "Subasta", url: "https://es.ramtrucks.com/mediaserver/iris?client=FCAUS&market=U&brand=R&vehicle=2025_DT&paint=PCG&fabric=&sa=DT6R98,2TV,22V,APA&pov=fronthero&width=770&height=400&bkgnd=white&resp=jpg&x=&y=&w=&h=&width=500&width=500,https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+        { label: "AutoPAQ", url: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+        { label: "Puerto", url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D,https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+        { label: "kk", url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D,https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }
+
+      ]
     },
     {
       id: 2,
       name: "RAM 2500",
-      images: {
-        auction: [
-          "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        ],
-        base: [
-          "https://images.unsplash.com/photo-1469285994282-454ceb49e63c?q=80&w=3542&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        ],
-        port: []
-      }
+      media: [
+        { label: "Subasta", url: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+        { label: "AutoPAQ", url: "https://images.unsplash.com/photo-1469285994282-454ceb49e63c?q=80&w=3542&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }
+      ]
     },
     {
       id: 3,
       name: "RAM 3500",
-      images: {
-        auction: [],
-        base: [],
-        port: []
-      }
+      media: []
     }
   ];
 
@@ -67,11 +48,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((product) => {
             // Tomar la primera imagen disponible para la miniatura
-            const allImages = [
-              ...(product.images.auction || []),
-              ...(product.images.base || []),
-              ...(product.images.port || [])
-            ];
+            const allImages = product.media.flatMap(item => item.url.split(',').map(url => url.trim())).filter(Boolean);
             return (
               <div
                 key={product.id}
@@ -107,11 +84,7 @@ export default function Home() {
         {/* Carousel Modal */}
         {selectedProduct && (
           <Carousel
-            media={{
-              auction: (selectedProduct.images.auction || []).map(url => ({ label: 'Subasta', url })),
-              base: (selectedProduct.images.base || []).map(url => ({ label: 'AutoPAQ', url })),
-              port: (selectedProduct.images.port || []).map(url => ({ label: 'Puerto', url })),
-            }}
+            media={selectedProduct.media}
             autoPlay={false}
             interval={5000}
             initialSlide={0}
